@@ -159,10 +159,6 @@ const Hero = () => {
       {/* Content */}
       <div className="container mx-auto px-6 md:px-8 relative z-20 h-full flex flex-col justify-center">
         <div className="max-w-3xl" ref={textRef}>
-          <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm text-white text-sm font-medium mb-6">
-            Football Collection 2024
-          </div>
-          
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
             Dominate <br />
             The Field
@@ -182,10 +178,10 @@ const Hero = () => {
               <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link 
-              to="/about" 
+              to="/categories" 
               className="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white border border-white font-medium rounded hover:bg-white/10 transition-colors"
             >
-              Learn More
+              More Categories
             </Link>
           </div>
         </div>
