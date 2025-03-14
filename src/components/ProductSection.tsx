@@ -1,6 +1,10 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ProductCard from './ProductCard';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
 
 const products = [
   {
@@ -68,38 +72,53 @@ const products = [
 
 const ProductSection = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const productsRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
+    // Set up GSAP animations
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top bottom-=100",
+        toggleActions: "play none none none"
+      }
+    });
+    
+    tl.fromTo(
+      headingRef.current,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }
     );
     
-    const section = document.getElementById('product-section');
-    if (section) {
-      observer.observe(section);
+    const productItems = productsRef.current?.children;
+    if (productItems?.length) {
+      gsap.fromTo(
+        productItems,
+        { y: 40, opacity: 0 },
+        { 
+          y: 0, 
+          opacity: 1, 
+          stagger: 0.1, 
+          duration: 0.6, 
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: productsRef.current,
+            start: "top bottom-=50",
+            toggleActions: "play none none none"
+          }
+        }
+      );
     }
     
-    return () => {
-      if (section) {
-        observer.unobserve(section);
-      }
-    };
+    setIsVisible(true);
   }, []);
 
   return (
-    <section id="product-section" className="py-20 px-6 md:px-8 bg-secondary/30">
+    <section ref={sectionRef} id="product-section" className="py-20 px-6 md:px-8 bg-secondary/30">
       <div className="container mx-auto">
-        <div 
-          className={`text-center mb-16 max-w-3xl mx-auto transition-opacity duration-1000 ease-out-expo ${
-            isVisible ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
+        <div ref={headingRef} className="text-center mb-16 max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Best Sellers</h2>
           <p className="text-muted-foreground">
             Discover our most popular athletic gear, trusted by professional athletes 
@@ -107,17 +126,9 @@ const ProductSection = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {products.map((product, index) => (
-            <div 
-              key={product.id}
-              className={`transition-all duration-700 transform ${
-                isVisible 
-                  ? 'translate-y-0 opacity-100' 
-                  : 'translate-y-10 opacity-0'
-              }`}
-              style={{ transitionDelay: `${index * 100}ms` }}
-            >
+        <div ref={productsRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {products.map((product) => (
+            <div key={product.id}>
               <ProductCard {...product} />
             </div>
           ))}
