@@ -9,6 +9,7 @@ const Hero = () => {
   const heroRef = useRef(null);
   const textRef = useRef(null);
   const buttonRef = useRef(null);
+  const animatedTextRef = useRef(null);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -31,6 +32,31 @@ const Hero = () => {
         { y: 0, opacity: 1, stagger: 0.1, duration: 0.6, ease: 'power2.out' },
         "-=0.4"
       );
+    
+    // Animated text effect for "every sports"
+    if (animatedTextRef.current) {
+      const chars = animatedTextRef.current.innerText.split('');
+      animatedTextRef.current.innerHTML = '';
+      
+      chars.forEach((char, index) => {
+        const span = document.createElement('span');
+        span.innerText = char;
+        span.style.display = 'inline-block';
+        span.style.opacity = '0';
+        animatedTextRef.current.appendChild(span);
+        
+        gsap.to(span, {
+          opacity: 1,
+          y: 0,
+          duration: 0.3,
+          delay: 1.5 + (index * 0.05),
+          ease: 'back.out',
+          onStart: () => {
+            gsap.set(span, { y: -20 });
+          }
+        });
+      });
+    }
   }, []);
 
   return (
@@ -58,7 +84,7 @@ const Hero = () => {
           </h1>
           
           <p className="text-lg sm:text-xl text-white/90 mb-8 max-w-xl">
-            Professional quality football gear for players at every level.
+            Professional quality football gear for players at <span ref={animatedTextRef} className="font-bold text-white">every sports</span> level.
             Engineered for performance, designed for champions.
           </p>
           
