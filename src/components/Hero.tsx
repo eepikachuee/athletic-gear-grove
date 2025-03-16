@@ -25,7 +25,7 @@ const Hero = () => {
   useEffect(() => {
     setIsLoaded(true);
     
-    // Image intro animation
+    // Image intro animation - Apple-style
     const introTimeline = gsap.timeline({
       onComplete: () => {
         setIntroComplete(true);
@@ -42,72 +42,96 @@ const Hero = () => {
         img.src = src;
       });
       
-      // Overlay animation - initial white flash
-      introTimeline.fromTo(imageOverlayRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.2 }
-      );
+      // Initial state - blank white screen
+      gsap.set(imageIntroRef.current, { opacity: 0 });
+      gsap.set(imageOverlayRef.current, { opacity: 1 });
       
-      // Rapid sequence of sports images
+      // Fade in first image with dramatic reveal
+      introTimeline.to(imageOverlayRef.current, {
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.inOut"
+      });
+      
+      introTimeline.to(imageIntroRef.current, {
+        opacity: 1, 
+        duration: 0.5,
+        ease: "power2.inOut"
+      }, "-=0.4");
+      
+      // Rapid sequence of sports images with Apple-style transitions
       sportsImages.forEach((src, index) => {
-        const delay = index === 0 ? 0.3 : 0.15;
+        if (index === 0) return; // Skip first image as it's already shown
         
+        // Add image change
         introTimeline.add(() => {
           if (imageIntroRef.current) {
             imageIntroRef.current.style.backgroundImage = `url(${src})`;
           }
         });
         
-        // Flash animation between images
+        // Apple-style cross-fade transitions
         introTimeline.to(imageOverlayRef.current, {
-          opacity: 0.7,
-          duration: 0.1,
+          opacity: 0.2,
+          duration: 0.2,
           ease: "power1.in"
         });
         
         introTimeline.to(imageOverlayRef.current, {
           opacity: 0,
-          duration: 0.15,
+          duration: 0.4,
           ease: "power1.out"
         });
         
-        // Slight zoom effect on each image
+        // Subtle parallax zoom effect (Apple-style)
         introTimeline.fromTo(imageIntroRef.current,
-          { scale: 1.1 },
-          { scale: 1, duration: delay, ease: "power2.out" },
+          { scale: 1.05 },
+          { scale: 1, duration: 0.5, ease: "power2.out" },
           "<"
         );
       });
       
-      // Final transition to the main background
+      // Final transition to the main content
       introTimeline.to(imageIntroRef.current, {
         opacity: 0,
-        duration: 0.5,
+        duration: 0.7,
         ease: "power2.inOut"
+      });
+      
+      introTimeline.to(imageOverlayRef.current, {
+        opacity: 0.8,
+        duration: 0.3,
+        ease: "power2.in"
+      }, "-=0.5");
+      
+      introTimeline.to(imageOverlayRef.current, {
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.out"
       });
     }
     
     function startMainAnimation() {
-      // GSAP animations for main content
+      // Apple-style main content animation - staggered fade-in from bottom
       const timeline = gsap.timeline();
       
       timeline
         .fromTo(heroRef.current, 
-          { scale: 1.1, filter: 'blur(8px)' }, 
-          { scale: 1, filter: 'blur(0)', duration: 1.2, ease: 'power3.out' }
+          { opacity: 0.7, scale: 1.03 }, 
+          { opacity: 1, scale: 1, duration: 1.2, ease: 'power2.out' }
         )
         .fromTo(textRef.current?.children, 
-          { y: 50, opacity: 0 }, 
-          { y: 0, opacity: 1, stagger: 0.1, duration: 0.8, ease: 'power2.out' },
+          { y: 40, opacity: 0 }, 
+          { y: 0, opacity: 1, stagger: 0.15, duration: 0.7, ease: 'power3.out' },
           "-=0.8"
         )
         .fromTo(buttonRef.current?.children, 
           { y: 20, opacity: 0 }, 
-          { y: 0, opacity: 1, stagger: 0.1, duration: 0.6, ease: 'power2.out' },
-          "-=0.4"
+          { y: 0, opacity: 1, stagger: 0.1, duration: 0.5, ease: 'power2.out' },
+          "-=0.3"
         );
       
-      // Animated text effect for "every sports"
+      // Animated text effect for "every sports" - Apple style character animation
       if (animatedTextRef.current) {
         const chars = animatedTextRef.current.innerText.split('');
         animatedTextRef.current.innerHTML = '';
@@ -122,11 +146,11 @@ const Hero = () => {
           gsap.to(span, {
             opacity: 1,
             y: 0,
-            duration: 0.3,
-            delay: 1.5 + (index * 0.05),
-            ease: 'back.out',
+            duration: 0.2,
+            delay: 1.5 + (index * 0.03),
+            ease: 'power3.out',
             onStart: () => {
-              gsap.set(span, { y: -20 });
+              gsap.set(span, { y: -15 });
             }
           });
         });
