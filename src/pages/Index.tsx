@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
+import VideoGallery from '../components/VideoGallery';
 import FeaturedCategories from '../components/FeaturedCategories';
 import ProductSection from '../components/ProductSection';
 import CtaSection from '../components/CtaSection';
@@ -63,6 +64,7 @@ const Index = () => {
       <Navbar />
       <main ref={mainRef}>
         <Hero />
+        <VideoGallery />
         <FeaturedCategories />
         <ProductSection />
         <CtaSection />

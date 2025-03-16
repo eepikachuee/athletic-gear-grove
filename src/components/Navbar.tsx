@@ -1,217 +1,155 @@
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Menu, X, Search, User } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
+import { Menu, X, ShoppingBag, User, Search } from 'lucide-react';
+import { useScrollPosition } from '../hooks/use-scroll-position';
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const scrollPosition = useScrollPosition();
+  const isScrolled = scrollPosition > 50;
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Focus search input when search is opened
-    if (isSearchOpen && searchInputRef.current) {
-      searchInputRef.current.focus();
+    // Close menu when scrolling
+    if (isMenuOpen && scrollPosition > 50) {
+      setIsMenuOpen(false);
     }
-  }, [isSearchOpen]);
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
-      setIsSearchOpen(false);
-      setSearchQuery('');
-    }
-  };
+  }, [scrollPosition, isMenuOpen]);
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out-expo ${
-        isScrolled ? 'py-4 glass backdrop-blur-md bg-black/20' : 'py-6 bg-transparent'
-      }`}
-    >
-      <div className="container mx-auto px-6 md:px-8">
+    <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+      isScrolled 
+        ? 'py-3 bg-white/80 backdrop-blur-md shadow-sm' 
+        : 'py-5 bg-black/30 backdrop-blur-sm'
+    }`}>
+      <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between">
-          <Link
-            to="/"
-            className="font-display font-bold text-xl md:text-2xl tracking-tighter text-white"
-          >
-            ATHLETIX
+          {/* Logo */}
+          <Link to="/" className="text-2xl font-bold text-white">
+            <span className={`transition-colors duration-300 ${isScrolled ? 'text-black' : 'text-white'}`}>
+              SPORTS ELITE
+            </span>
           </Link>
 
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="link-underline font-medium text-white hover:text-white/80 transition-colors">
-              Home
-            </Link>
-            <Link to="/shop" className="link-underline font-medium text-white hover:text-white/80 transition-colors">
+            <Link to="/shop" className={`text-sm font-medium hover:opacity-80 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
               Shop
             </Link>
-            <Link to="/collections" className="link-underline font-medium text-white hover:text-white/80 transition-colors">
-              Collections
+            <Link to="/new-arrivals" className={`text-sm font-medium hover:opacity-80 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
+              New Arrivals
             </Link>
-            <Link to="/about" className="link-underline font-medium text-white hover:text-white/80 transition-colors">
+            <Link to="/categories" className={`text-sm font-medium hover:opacity-80 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
+              Categories
+            </Link>
+            <Link to="/about" className={`text-sm font-medium hover:opacity-80 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
               About
+            </Link>
+            <Link to="/contact" className={`text-sm font-medium hover:opacity-80 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
+              Contact
             </Link>
           </nav>
 
-          <div className="flex items-center space-x-4">
-            {/* Search button */}
-            <button
-              className="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-white/10 text-white"
-              aria-label="Search"
-              onClick={() => setIsSearchOpen(true)}
-            >
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center space-x-6">
+            <Link to="/search" className={`hover:opacity-80 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
               <Search className="w-5 h-5" />
-            </button>
-            
-            {/* Cart button */}
-            <Link
-              to="/cart"
-              className="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-white/10 text-white"
-              aria-label="Cart"
-            >
+            </Link>
+            <Link to="/profile" className={`hover:opacity-80 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
+              <User className="w-5 h-5" />
+            </Link>
+            <Link to="/cart" className={`hover:opacity-80 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
               <ShoppingBag className="w-5 h-5" />
             </Link>
-            
-            {/* User profile/login button */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <button className="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-white/10 text-white">
-                  <User className="w-5 h-5" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-80 p-0">
-                <div className="px-4 py-3 border-b">
-                  <h3 className="font-medium">Account</h3>
-                </div>
-                <div className="px-4 py-4 flex flex-col gap-3">
-                  <Link to="/login" className="text-sm font-medium py-2 px-4 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 text-center">
-                    Sign In
-                  </Link>
-                  <Link to="/register" className="text-sm font-medium py-2 px-4 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90 text-center">
-                    Create Account
-                  </Link>
-                  <Link to="/profile" className="text-sm font-medium py-2 px-4 border rounded-md hover:bg-accent text-center">
-                    My Profile
-                  </Link>
-                </div>
-              </PopoverContent>
-            </Popover>
-            
-            {/* Mobile menu button */}
-            <button
-              className="md:hidden w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-white/10 text-white"
-              aria-label="Toggle menu"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
-            </button>
           </div>
-        </div>
-      </div>
 
-      {/* Mobile menu */}
-      <div
-        className={`fixed inset-0 bg-black/95 z-40 transition-transform duration-500 ease-out-expo ${
-          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        } md:hidden pt-24`}
-      >
-        <nav className="flex flex-col items-center space-y-8 p-8">
-          <Link
-            to="/"
-            className="text-2xl font-medium text-white"
-            onClick={() => setIsMobileMenuOpen(false)}
+          {/* Mobile Menu Button */}
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden z-50"
+            aria-label="Toggle menu"
           >
-            Home
-          </Link>
-          <Link
-            to="/shop"
-            className="text-2xl font-medium text-white"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Shop
-          </Link>
-          <Link
-            to="/collections"
-            className="text-2xl font-medium text-white"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Collections
-          </Link>
-          <Link
-            to="/about"
-            className="text-2xl font-medium text-white"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            About
-          </Link>
-          <Link
-            to="/profile"
-            className="text-2xl font-medium text-white"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            My Profile
-          </Link>
-        </nav>
-      </div>
+            {isMenuOpen ? (
+              <X className={`w-6 h-6 ${isScrolled ? 'text-black' : 'text-white'}`} />
+            ) : (
+              <Menu className={`w-6 h-6 ${isScrolled ? 'text-black' : 'text-white'}`} />
+            )}
+          </button>
 
-      {/* Search overlay - Apple style */}
-      <div 
-        className={`fixed inset-0 bg-black/95 z-50 transition-opacity duration-300 
-                    ${isSearchOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-      >
-        <div className="container mx-auto px-6 md:px-8 pt-24">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-medium text-white">Search</h2>
-            <button 
-              onClick={() => setIsSearchOpen(false)}
-              className="text-white hover:text-white/80"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
-          <form onSubmit={handleSearchSubmit} className="max-w-2xl mx-auto">
-            <div className="flex items-center border-b border-white/20 focus-within:border-white pb-2">
-              <Search className="w-5 h-5 text-white/50" />
-              <Input
-                ref={searchInputRef}
-                type="text"
-                placeholder="Search products..."
-                className="bg-transparent border-none text-white text-xl pl-3 focus-visible:ring-0 focus-visible:ring-offset-0"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className="fixed inset-0 bg-black/95 z-40 md:hidden">
+              <div className="flex flex-col h-full justify-center items-center space-y-8 p-8">
+                <Link 
+                  to="/" 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="text-3xl font-bold text-white"
+                >
+                  SPORTS ELITE
+                </Link>
+                <div className="flex flex-col space-y-6 items-center">
+                  <Link 
+                    to="/shop" 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-xl font-medium text-white hover:text-gray-300 transition-colors"
+                  >
+                    Shop
+                  </Link>
+                  <Link 
+                    to="/new-arrivals" 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-xl font-medium text-white hover:text-gray-300 transition-colors"
+                  >
+                    New Arrivals
+                  </Link>
+                  <Link 
+                    to="/categories" 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-xl font-medium text-white hover:text-gray-300 transition-colors"
+                  >
+                    Categories
+                  </Link>
+                  <Link 
+                    to="/about" 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-xl font-medium text-white hover:text-gray-300 transition-colors"
+                  >
+                    About
+                  </Link>
+                  <Link 
+                    to="/contact" 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-xl font-medium text-white hover:text-gray-300 transition-colors"
+                  >
+                    Contact
+                  </Link>
+                </div>
+                <div className="flex items-center space-x-8 mt-8">
+                  <Link 
+                    to="/search" 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-white hover:text-gray-300 transition-colors"
+                  >
+                    <Search className="w-6 h-6" />
+                  </Link>
+                  <Link 
+                    to="/profile" 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-white hover:text-gray-300 transition-colors"
+                  >
+                    <User className="w-6 h-6" />
+                  </Link>
+                  <Link 
+                    to="/cart" 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-white hover:text-gray-300 transition-colors"
+                  >
+                    <ShoppingBag className="w-6 h-6" />
+                  </Link>
+                </div>
+              </div>
             </div>
-          </form>
+          )}
         </div>
       </div>
     </header>
