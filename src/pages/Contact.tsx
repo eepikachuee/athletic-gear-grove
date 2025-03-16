@@ -6,15 +6,18 @@ import gsap from 'gsap';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { toast } from '@/components/ui/use-toast';
+import { Mail, Phone, MapPin, Clock } from 'lucide-react';
 
 const Contact = () => {
   const contentRef = useRef(null);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
-  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
 
   useEffect(() => {
     gsap.fromTo(
@@ -22,132 +25,170 @@ const Contact = () => {
       { opacity: 0, y: 20 },
       { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
     );
+    
+    gsap.fromTo(
+      ".contact-info-item",
+      { opacity: 0, x: -20 },
+      { opacity: 1, x: 0, duration: 0.5, stagger: 0.1, delay: 0.3 }
+    );
   }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (value: string) => {
+    setFormData(prev => ({ ...prev, subject: value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you would send the form data to a server here
-    console.log({ name, email, subject, message });
-    
-    // Display success message
+    console.log('Contact form submitted:', formData);
     toast({
-      title: "Message Sent!",
-      description: "We've received your message and will get back to you soon.",
+      title: "Message Sent",
+      description: "We've received your message and will respond within 24 hours.",
     });
-    
-    // Reset form
-    setName('');
-    setEmail('');
-    setSubject('');
-    setMessage('');
+    setFormData({
+      name: '',
+      email: '',
+      subject: '',
+      message: ''
+    });
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow pt-32 pb-20 px-6 md:px-8">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-6xl">
           <div ref={contentRef}>
-            <h1 className="text-3xl md:text-4xl font-bold mb-8">Contact Us</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center">Contact Us</h1>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
               <div>
-                <h2 className="text-xl font-semibold mb-4">Get In Touch</h2>
-                <p className="mb-6">
-                  We're here to help and answer any questions you might have. We look forward to hearing from you.
+                <h2 className="text-2xl font-bold mb-6">Get in Touch</h2>
+                <p className="text-gray-600 mb-8">
+                  Have a question, feedback, or need assistance? Fill out the form below and our team will 
+                  get back to you as soon as possible.
                 </p>
                 
-                <div className="space-y-4 mb-8">
-                  <div className="flex items-start space-x-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
+                <div className="space-y-6">
+                  <div className="contact-info-item flex items-start">
+                    <Mail className="w-5 h-5 text-primary mt-1 mr-3" />
                     <div>
-                      <p className="font-medium">Email</p>
-                      <p className="text-muted-foreground">support@sportselite.com</p>
+                      <h3 className="font-medium">Email</h3>
+                      <p className="text-gray-600">support@sportselite.com</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-start space-x-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
+                  <div className="contact-info-item flex items-start">
+                    <Phone className="w-5 h-5 text-primary mt-1 mr-3" />
                     <div>
-                      <p className="font-medium">Phone</p>
-                      <p className="text-muted-foreground">+1 (800) 123-4567</p>
+                      <h3 className="font-medium">Phone</h3>
+                      <p className="text-gray-600">+1 (555) 123-4567</p>
+                      <p className="text-gray-500 text-sm">Mon-Fri: 9AM - 6PM EST</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-start space-x-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
+                  <div className="contact-info-item flex items-start">
+                    <MapPin className="w-5 h-5 text-primary mt-1 mr-3" />
                     <div>
-                      <p className="font-medium">Headquarters</p>
-                      <p className="text-muted-foreground">123 Sport Avenue, New York, NY 10001</p>
+                      <h3 className="font-medium">Headquarters</h3>
+                      <p className="text-gray-600">
+                        123 Sports Avenue<br />
+                        New York, NY 10001<br />
+                        United States
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="contact-info-item flex items-start">
+                    <Clock className="w-5 h-5 text-primary mt-1 mr-3" />
+                    <div>
+                      <h3 className="font-medium">Business Hours</h3>
+                      <p className="text-gray-600">
+                        Monday - Friday: 9AM - 6PM EST<br />
+                        Saturday: 10AM - 4PM EST<br />
+                        Sunday: Closed
+                      </p>
                     </div>
                   </div>
                 </div>
-                
-                <h2 className="text-xl font-semibold mb-4">Hours of Operation</h2>
-                <p className="mb-1">Monday - Friday: 9AM - 8PM EST</p>
-                <p className="mb-1">Saturday: 10AM - 6PM EST</p>
-                <p>Sunday: Closed</p>
               </div>
               
               <div>
-                <h2 className="text-xl font-semibold mb-4">Send Us a Message</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-6 bg-gray-50 p-6 rounded-xl">
                   <div>
-                    <label htmlFor="name" className="block mb-1 text-sm font-medium">Name</label>
-                    <Input
-                      id="name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                      placeholder="Your name"
+                    <label htmlFor="name" className="block text-sm font-medium mb-2">Full Name</label>
+                    <Input 
+                      id="name" 
+                      name="name" 
+                      value={formData.name} 
+                      onChange={handleChange} 
+                      required 
                     />
                   </div>
                   
                   <div>
-                    <label htmlFor="email" className="block mb-1 text-sm font-medium">Email</label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      placeholder="Your email address"
+                    <label htmlFor="email" className="block text-sm font-medium mb-2">Email Address</label>
+                    <Input 
+                      id="email" 
+                      name="email" 
+                      type="email" 
+                      value={formData.email} 
+                      onChange={handleChange} 
+                      required 
                     />
                   </div>
                   
                   <div>
-                    <label htmlFor="subject" className="block mb-1 text-sm font-medium">Subject</label>
-                    <Input
-                      id="subject"
-                      value={subject}
-                      onChange={(e) => setSubject(e.target.value)}
-                      required
-                      placeholder="Subject of your message"
-                    />
+                    <label htmlFor="subject" className="block text-sm font-medium mb-2">Subject</label>
+                    <Select onValueChange={handleSelectChange} value={formData.subject}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a subject" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="general">General Inquiry</SelectItem>
+                        <SelectItem value="order">Order Status</SelectItem>
+                        <SelectItem value="return">Return/Exchange</SelectItem>
+                        <SelectItem value="product">Product Information</SelectItem>
+                        <SelectItem value="feedback">Feedback</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   <div>
-                    <label htmlFor="message" className="block mb-1 text-sm font-medium">Message</label>
-                    <Textarea
-                      id="message"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      required
-                      placeholder="Your message"
-                      rows={5}
+                    <label htmlFor="message" className="block text-sm font-medium mb-2">
+                      Message
+                    </label>
+                    <Textarea 
+                      id="message" 
+                      name="message" 
+                      rows={6} 
+                      value={formData.message} 
+                      onChange={handleChange} 
+                      required 
+                      placeholder="How can we help you?"
                     />
                   </div>
                   
                   <Button type="submit" className="w-full">Send Message</Button>
                 </form>
               </div>
+            </div>
+            
+            <div className="rounded-xl overflow-hidden h-[400px] shadow-md">
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215256349179!2d-73.98784432346177!3d40.75090097138799!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1710682805069!5m2!1sen!2sus" 
+                width="100%" 
+                height="100%" 
+                style={{ border: 0 }} 
+                allowFullScreen 
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade">
+              </iframe>
             </div>
           </div>
         </div>
