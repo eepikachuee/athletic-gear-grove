@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
@@ -9,7 +8,7 @@ import ProductCard from '../components/ProductCard';
 // Sample products data
 const products = [
   {
-    id: 1,
+    id: "1",
     name: "Performance Running Shoes",
     price: 129.99,
     image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
@@ -18,14 +17,14 @@ const products = [
     isNew: true
   },
   {
-    id: 2,
+    id: "2",
     name: "Breathable Training Tee",
     price: 34.99,
     image: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=800&auto=format&fit=crop&q=80",
     category: "Apparel"
   },
   {
-    id: 3,
+    id: "3",
     name: "Compression Fitness Leggings",
     price: 64.99,
     image: "https://images.unsplash.com/photo-1506902540976-51dac23c5663?w=800&auto=format&fit=crop&q=80",
@@ -33,21 +32,21 @@ const products = [
     isNew: true
   },
   {
-    id: 4,
+    id: "4",
     name: "Adjustable Jump Rope",
     price: 19.99,
     image: "https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=800&auto=format&fit=crop&q=80",
     category: "Equipment"
   },
   {
-    id: 5,
+    id: "5",
     name: "Lightweight Training Shorts",
     price: 39.99,
     image: "https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?w=800&auto=format&fit=crop&q=80",
     category: "Apparel"
   },
   {
-    id: 6,
+    id: "6",
     name: "Advanced Fitness Tracker",
     price: 89.99,
     image: "https://images.unsplash.com/photo-1576243345690-4e4b79b63288?w=800&auto=format&fit=crop&q=80",
@@ -56,35 +55,35 @@ const products = [
     isNew: true
   },
   {
-    id: 7,
+    id: "7",
     name: "Insulated Water Bottle",
     price: 29.99,
     image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=800&auto=format&fit=crop&q=80",
     category: "Accessories"
   },
   {
-    id: 8,
+    id: "8",
     name: "Cushioned Training Socks",
     price: 14.99,
     image: "https://images.unsplash.com/photo-1586350977771-b3714d56a8d2?w=800&auto=format&fit=crop&q=80",
     category: "Accessories"
   },
   {
-    id: 9,
+    id: "9",
     name: "Performance Workout Gloves",
     price: 24.99,
     image: "https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=800&auto=format&fit=crop&q=80",
     category: "Accessories"
   },
   {
-    id: 10,
+    id: "10",
     name: "Impact Resistance Skipping Rope",
     price: 18.99,
     image: "https://images.unsplash.com/photo-1434682772747-f16d3ea162c3?w=800&auto=format&fit=crop&q=80",
     category: "Equipment"
   },
   {
-    id: 11,
+    id: "11",
     name: "Lightweight Running Jacket",
     price: 79.99,
     image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&auto=format&fit=crop&q=80",
@@ -92,7 +91,7 @@ const products = [
     isNew: true
   },
   {
-    id: 12,
+    id: "12",
     name: "Premium Yoga Mat",
     price: 49.99,
     image: "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=800&auto=format&fit=crop&q=80",
