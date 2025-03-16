@@ -39,56 +39,56 @@ const NewArrivals = () => {
   // Mock data for new arrivals
   const newArrivalsData = [
     {
-      id: 1,
+      id: "1",
       name: "Pro Performance Running Shoes",
       price: 129.99,
       category: "Footwear",
       image: "/placeholder.svg"
     },
     {
-      id: 2,
+      id: "2",
       name: "Breathable Compression Shirt",
       price: 54.99,
       category: "Apparel",
       image: "/placeholder.svg"
     },
     {
-      id: 3,
+      id: "3",
       name: "Ultra-Light Training Shorts",
       price: 39.99,
       category: "Apparel",
       image: "/placeholder.svg"
     },
     {
-      id: 4,
+      id: "4",
       name: "Weather-Resistant Running Jacket",
       price: 89.99,
       category: "Outerwear",
       image: "/placeholder.svg"
     },
     {
-      id: 5,
+      id: "5",
       name: "Seamless High-Impact Sports Bra",
       price: 44.99,
       category: "Women",
       image: "/placeholder.svg"
     },
     {
-      id: 6,
+      id: "6",
       name: "Adjustable Weight Training Gloves",
       price: 32.99,
       category: "Accessories",
       image: "/placeholder.svg"
     },
     {
-      id: 7,
+      id: "7",
       name: "Quick-Dry Performance Socks (3-Pack)",
       price: 19.99,
       category: "Accessories",
       image: "/placeholder.svg"
     },
     {
-      id: 8,
+      id: "8",
       name: "Smart Fitness Tracker Watch",
       price: 149.99,
       category: "Technology",
@@ -118,7 +118,7 @@ const NewArrivals = () => {
                     price={product.price}
                     category={product.category}
                     image={product.image}
-                    id={product.id.toString()}
+                    id={product.id}
                   />
                 </div>
               ))}

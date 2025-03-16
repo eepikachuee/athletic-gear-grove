@@ -43,7 +43,7 @@ const Sale = () => {
   // Mock data for sale items
   const saleItemsData = [
     {
-      id: 101,
+      id: "101",
       name: "Elite Performance Running Shoes",
       originalPrice: 129.99,
       salePrice: 89.99,
@@ -52,7 +52,7 @@ const Sale = () => {
       discountPercentage: 30
     },
     {
-      id: 102,
+      id: "102",
       name: "Compression Training Shirt",
       originalPrice: 49.99,
       salePrice: 34.99,
@@ -61,7 +61,7 @@ const Sale = () => {
       discountPercentage: 30
     },
     {
-      id: 103,
+      id: "103",
       name: "Lightweight Training Shorts",
       originalPrice: 45.99,
       salePrice: 29.99,
@@ -70,7 +70,7 @@ const Sale = () => {
       discountPercentage: 35
     },
     {
-      id: 104,
+      id: "104",
       name: "Water-Resistant Jacket",
       originalPrice: 99.99,
       salePrice: 69.99,
@@ -79,7 +79,7 @@ const Sale = () => {
       discountPercentage: 30
     },
     {
-      id: 105,
+      id: "105",
       name: "Pro Sports Bra",
       originalPrice: 39.99,
       salePrice: 24.99,
@@ -88,7 +88,7 @@ const Sale = () => {
       discountPercentage: 40
     },
     {
-      id: 106,
+      id: "106",
       name: "Weight Training Gloves",
       originalPrice: 34.99,
       salePrice: 19.99,
@@ -97,7 +97,7 @@ const Sale = () => {
       discountPercentage: 45
     },
     {
-      id: 107,
+      id: "107",
       name: "Performance Socks (5-Pack)",
       originalPrice: 24.99,
       salePrice: 14.99,
@@ -106,7 +106,7 @@ const Sale = () => {
       discountPercentage: 40
     },
     {
-      id: 108,
+      id: "108",
       name: "Insulated Water Bottle",
       originalPrice: 29.99,
       salePrice: 19.99,
@@ -155,7 +155,7 @@ const Sale = () => {
                       originalPrice={product.originalPrice}
                       category={product.category}
                       image={product.image}
-                      id={product.id.toString()}
+                      id={product.id}
                     />
                   </div>
                 ))}

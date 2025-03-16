@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { ShoppingBag } from 'lucide-react';
 
 interface ProductCardProps {
-  id: number;
+  id: string;
   name: string;
   price: number;
+  originalPrice?: number;
   image: string;
   hoverImage?: string;
   category: string;
@@ -16,6 +17,7 @@ const ProductCard = ({
   id, 
   name, 
   price, 
+  originalPrice, 
   image, 
   hoverImage, 
   category, 
@@ -74,7 +76,14 @@ const ProductCard = ({
       <div>
         <p className="text-sm text-muted-foreground mb-1">{category}</p>
         <h3 className="font-medium mb-1 line-clamp-1">{name}</h3>
-        <p className="font-medium">${price.toFixed(2)}</p>
+        {originalPrice ? (
+          <div className="flex items-center gap-2">
+            <p className="font-medium">${price.toFixed(2)}</p>
+            <p className="text-sm text-muted-foreground line-through">${originalPrice.toFixed(2)}</p>
+          </div>
+        ) : (
+          <p className="font-medium">${price.toFixed(2)}</p>
+        )}
       </div>
     </div>
   );
