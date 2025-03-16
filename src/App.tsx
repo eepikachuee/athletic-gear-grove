@@ -10,6 +10,31 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import Shop from "./pages/Shop";
+import Product from "./pages/Product";
+import Collections from "./pages/Collections";
+import About from "./pages/About";
+import Cart from "./pages/Cart";
+import Categories from "./pages/Categories";
+import CategoryDetail from "./pages/CategoryDetail";
+import Help from "./pages/Help";
+import Contact from "./pages/Contact";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Cookies from "./pages/Cookies";
+import Shipping from "./pages/Shipping";
+import Returns from "./pages/Returns";
+import SizeGuide from "./pages/SizeGuide";
+import Accessibility from "./pages/Accessibility";
+import Careers from "./pages/Careers";
+import Stores from "./pages/Stores";
+import Sustainability from "./pages/Sustainability";
+import Affiliates from "./pages/Affiliates";
+import Press from "./pages/Press";
+import Search from "./pages/Search";
+import NewArrivals from "./pages/NewArrivals";
+import Sale from "./pages/Sale";
+import Membership from "./pages/Membership";
 
 const queryClient = new QueryClient();
 
@@ -62,7 +87,43 @@ const App = () => {
             <Route path="/login" element={<Auth />} />
             <Route path="/register" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            
+            {/* Shop Pages */}
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/shop/:category" element={<CategoryDetail />} />
+            <Route path="/product/:id" element={<Product />} />
+            <Route path="/collections" element={<Collections />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/search" element={<Search />} />
+            
+            {/* New Arrivals and Sales */}
+            <Route path="/new-arrivals" element={<NewArrivals />} />
+            <Route path="/sale" element={<Sale />} />
+            <Route path="/membership" element={<Membership />} />
+            
+            {/* Help Center */}
+            <Route path="/help" element={<Help />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/shipping" element={<Shipping />} />
+            <Route path="/returns" element={<Returns />} />
+            <Route path="/size-guide" element={<SizeGuide />} />
+            <Route path="/accessibility" element={<Accessibility />} />
+            
+            {/* About Company */}
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/stores" element={<Stores />} />
+            <Route path="/sustainability" element={<Sustainability />} />
+            <Route path="/affiliates" element={<Affiliates />} />
+            <Route path="/press" element={<Press />} />
+            
+            {/* Legal */}
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/cookies" element={<Cookies />} />
+            
+            {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
