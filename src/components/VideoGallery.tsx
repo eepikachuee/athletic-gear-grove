@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -69,6 +70,7 @@ const VideoGallery = () => {
   const mainVideoRef = useRef<HTMLVideoElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const mainVideoContainerRef = useRef<HTMLDivElement>(null);
+  const featuredVideoRef = useRef<HTMLDivElement>(null); // Reference to track the first featured video
   const galleryRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
   
@@ -78,11 +80,12 @@ const VideoGallery = () => {
     
     const mainVideo = mainVideoRef.current;
     const mainVideoContainer = mainVideoContainerRef.current;
+    const featuredVideo = featuredVideoRef.current;
     const gallery = galleryRef.current;
     const horizontal = horizontalRef.current;
     const section = sectionRef.current;
     
-    if (!mainVideo || !mainVideoContainer || !gallery || !horizontal || !section) return;
+    if (!mainVideo || !mainVideoContainer || !gallery || !horizontal || !section || !featuredVideo) return;
     
     // Make sure video is loaded and can play
     mainVideo.load();
@@ -118,7 +121,15 @@ const VideoGallery = () => {
       }
     });
     
-    // Zoom out animation sequence
+    // Calculate position for direct transition
+    const featuredVideoRect = featuredVideo.getBoundingClientRect();
+    const mainVideoRect = mainVideoContainer.getBoundingClientRect();
+    
+    const scaleRatio = featuredVideoRect.width / mainVideoRect.width;
+    const xOffset = featuredVideoRect.left - mainVideoRect.left;
+    const yOffset = featuredVideoRect.top - mainVideoRect.top;
+    
+    // Zoom out animation sequence that transforms the main video directly to its position in the gallery
     zoomOutTl
       .to(headerRef.current, { 
         opacity: 0, 
@@ -126,9 +137,17 @@ const VideoGallery = () => {
         duration: 0.5 
       })
       .to(mainVideoContainer, { 
-        scale: 0.5, 
-        y: "-25vh", 
-        duration: 1 
+        scale: scaleRatio,
+        x: xOffset,
+        y: yOffset + window.scrollY, 
+        duration: 1,
+        onComplete: () => {
+          // Hide the main video once the animation is complete
+          gsap.set(mainVideoContainer, { autoAlpha: 0 });
+          
+          // Make featured video visible (it's hidden until animation completes)
+          gsap.set(featuredVideo, { autoAlpha: 1 });
+        }
       })
       .to(gallery, { 
         opacity: 1, 
@@ -143,8 +162,8 @@ const VideoGallery = () => {
         x: -totalWidth,
         ease: "none",
         scrollTrigger: {
-          trigger: horizontal,
-          start: "top center",
+          trigger: gallery,
+          start: "top 20%",
           end: "+=200%",
           scrub: true,
           invalidateOnRefresh: true,
@@ -253,7 +272,7 @@ const VideoGallery = () => {
         {/* Gallery that appears after main video zooms out */}
         <div 
           ref={galleryRef} 
-          className="opacity-0 pt-[30vh]"
+          className="opacity-0 pt-[10vh]"
         >
           <h3 className="text-2xl font-bold text-white mb-8 text-center">Featured Videos</h3>
           
@@ -261,12 +280,14 @@ const VideoGallery = () => {
           <div className="overflow-hidden">
             <div 
               ref={horizontalRef}
-              className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-12 w-[200%]"
+              className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-12 w-[200%]"
             >
-              {/* First video in the gallery - same as main video */}
+              {/* First video in the gallery - same as main video but initially hidden */}
               <div 
+                ref={featuredVideoRef}
                 key="main-video-copy"
-                className="gallery-video-item relative rounded-xl overflow-hidden shadow-lg cursor-pointer transform transition-transform duration-300 hover:scale-105"
+                className="gallery-video-item relative rounded-xl overflow-hidden shadow-lg cursor-pointer transform transition-transform duration-300 hover:scale-105 opacity-0"
+                style={{ opacity: 0 }} // Initially hidden, will be revealed when main video animation completes
               >
                 <div className="aspect-video bg-black">
                   <video 

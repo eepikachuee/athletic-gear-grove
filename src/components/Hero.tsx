@@ -11,9 +11,38 @@ const Hero = () => {
   const buttonRef = useRef(null);
   const animatedTextRef = useRef(null);
   const videoRef = useRef(null);
+  const videoOverlayRef = useRef(null);
 
   useEffect(() => {
     setIsLoaded(true);
+    
+    // Parallax video effect on scroll
+    const parallaxVideo = () => {
+      if (videoRef.current) {
+        const scrollPos = window.scrollY;
+        const videoEl = videoRef.current as HTMLElement;
+        // Scale up slightly and move video on scroll for parallax effect
+        gsap.to(videoEl, {
+          y: scrollPos * 0.15,
+          scale: 1 + scrollPos * 0.0005,
+          duration: 0.5,
+          ease: "power1.out"
+        });
+        
+        // Increase overlay opacity on scroll
+        if (videoOverlayRef.current) {
+          const overlayEl = videoOverlayRef.current as HTMLElement;
+          const opacity = Math.min(0.3 + scrollPos * 0.001, 0.7);
+          gsap.to(overlayEl, {
+            backgroundColor: `rgba(0, 0, 0, ${opacity})`,
+            duration: 0.5
+          });
+        }
+      }
+    };
+    
+    // Add scroll listener for parallax effect
+    window.addEventListener('scroll', parallaxVideo);
     
     // Main content animation
     const timeline = gsap.timeline();
@@ -58,25 +87,32 @@ const Hero = () => {
         });
       });
     }
+    
+    return () => {
+      window.removeEventListener('scroll', parallaxVideo);
+    };
   }, []);
 
   return (
     <section className="relative h-screen overflow-hidden">
       {/* Video background with overlay */}
-      <div className="absolute inset-0 bg-black/30 z-10"></div>
+      <div 
+        ref={videoOverlayRef}
+        className="absolute inset-0 bg-black/30 z-10"
+      ></div>
       <div 
         ref={heroRef}
         className="absolute inset-0 w-full h-full"
       >
         <video 
           ref={videoRef}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover scale-[1.05]" /* Start slightly zoomed in for the parallax effect */
           autoPlay 
           muted 
           loop 
           playsInline
         >
-          <source src="https://www.apple.com/105/media/us/mac/family/2021/d3a7c087-6656-4594-b06e-b88511e97476/films/product-gallery/mac-product-gallery-sm.mp4" type="video/mp4" />
+          <source src="https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </div>
