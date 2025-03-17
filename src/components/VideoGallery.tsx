@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -136,7 +135,7 @@ const VideoGallery = () => {
         duration: 0.5 
       }, "-=0.3");
     
-    // Set up horizontal scrolling
+    // Set up horizontal scrolling for the gallery
     if (horizontal.scrollWidth > horizontal.clientWidth) {
       const totalWidth = horizontal.scrollWidth - horizontal.clientWidth;
       
@@ -148,7 +147,9 @@ const VideoGallery = () => {
           start: "top center",
           end: "+=200%",
           scrub: true,
-          pin: true,
+          invalidateOnRefresh: true,
+          pin: gallery,
+          pinSpacing: true,
           onEnter: () => {
             console.log("Horizontal scroll triggered");
           }
@@ -156,7 +157,7 @@ const VideoGallery = () => {
       });
     }
     
-    // Animate gallery video items
+    // Setup video autoplay for gallery videos
     const galleryVideos = document.querySelectorAll('.gallery-video-item');
     galleryVideos.forEach((video, index) => {
       const videoEl = video.querySelector('video');
@@ -260,9 +261,33 @@ const VideoGallery = () => {
           <div className="overflow-hidden">
             <div 
               ref={horizontalRef}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-12 w-[200%]"
+              className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-12 w-[200%]"
             >
-              {videoData.map((video) => (
+              {/* First video in the gallery - same as main video */}
+              <div 
+                key="main-video-copy"
+                className="gallery-video-item relative rounded-xl overflow-hidden shadow-lg cursor-pointer transform transition-transform duration-300 hover:scale-105"
+              >
+                <div className="aspect-video bg-black">
+                  <video 
+                    className="w-full h-full object-cover"
+                    preload="auto"
+                    muted 
+                    loop 
+                    playsInline
+                  >
+                    <source src={videoData[0].videoSrc} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-4 flex flex-col justify-end">
+                  <h4 className="text-lg font-bold text-white mb-1">{videoData[0].title}</h4>
+                  <p className="text-sm text-white/70">{videoData[0].description}</p>
+                </div>
+              </div>
+              
+              {/* Rest of the videos */}
+              {videoData.slice(1).map((video) => (
                 <div 
                   key={video.id}
                   className="gallery-video-item relative rounded-xl overflow-hidden shadow-lg cursor-pointer transform transition-transform duration-300 hover:scale-105"
