@@ -47,15 +47,21 @@ const Hero = () => {
     // Main content animation
     const timeline = gsap.timeline();
     
+    // Video zoom in effect on load - similar to playagrande.com
     timeline
+      .fromTo(videoRef.current, 
+        { scale: 1.2, opacity: 0.7 }, 
+        { scale: 1.05, opacity: 1, duration: 2.5, ease: 'power2.out' }
+      )
       .fromTo(heroRef.current, 
-        { opacity: 0.7, scale: 1.03 }, 
-        { opacity: 1, scale: 1, duration: 1.2, ease: 'power2.out' }
+        { opacity: 0.7 }, 
+        { opacity: 1, duration: 1.2, ease: 'power2.out' },
+        "-=2"
       )
       .fromTo(textRef.current?.children, 
         { y: 40, opacity: 0 }, 
         { y: 0, opacity: 1, stagger: 0.15, duration: 0.7, ease: 'power3.out' },
-        "-=0.8"
+        "-=1.5"
       )
       .fromTo(buttonRef.current?.children, 
         { y: 20, opacity: 0 }, 
@@ -95,7 +101,7 @@ const Hero = () => {
 
   return (
     <section className="relative h-screen overflow-hidden">
-      {/* Video background with overlay */}
+      {/* Video background with overlay - styled similarly to playagrande.com */}
       <div 
         ref={videoOverlayRef}
         className="absolute inset-0 bg-black/30 z-10"
@@ -120,29 +126,29 @@ const Hero = () => {
       {/* Content */}
       <div className="container mx-auto px-6 md:px-8 relative z-20 h-full flex flex-col justify-center">
         <div className="max-w-3xl" ref={textRef}>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 font-display tracking-tight">
             Dominate <br />
-            The Field
+            <span className="text-white/90">The Field</span>
           </h1>
           
-          <p className="text-lg sm:text-xl text-white/90 mb-8 max-w-xl">
+          <p className="text-lg sm:text-xl text-white/80 mb-10 max-w-xl leading-relaxed">
             Professional quality football gear for players at <span ref={animatedTextRef} className="font-bold text-white">every sports</span> level.
             Engineered for performance, designed for champions.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4" ref={buttonRef}>
+          <div className="flex flex-col sm:flex-row gap-5" ref={buttonRef}>
             <Link 
               to="/shop" 
-              className="inline-flex items-center justify-center px-8 py-4 bg-white text-black font-medium rounded hover:bg-white/90 transition-colors group"
+              className="inline-flex items-center justify-center px-8 py-4 bg-white text-black font-medium rounded-full hover:bg-white/90 transition-all duration-300 group"
             >
               Shop Collection
-              <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
             <Link 
               to="/categories" 
-              className="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white border border-white font-medium rounded hover:bg-white/10 transition-colors"
+              className="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white border border-white font-medium rounded-full hover:bg-white/10 transition-all duration-300"
             >
-              More Categories
+              Explore Categories
             </Link>
           </div>
         </div>
