@@ -2,12 +2,10 @@
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-import { useScrollPosition } from '../hooks/use-scroll-position';
 import { Button } from './ui/button';
 
 // Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+gsap.registerPlugin(ScrollTrigger);
 
 interface VideoItem {
   id: string;
@@ -21,138 +19,188 @@ const videoData: VideoItem[] = [
     id: 'v1',
     title: 'Football Training',
     description: 'Professional football training techniques',
-    videoSrc: 'https://www.apple.com/105/media/us/mac/family/2021/d3a7c087-6656-4594-b06e-b88511e97476/films/product-gallery/mac-product-gallery-sm.mp4'
+    videoSrc: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
   },
   {
     id: 'v2',
     title: 'Basketball Skills',
     description: 'Improve your basketball handling skills',
-    videoSrc: 'https://www.apple.com/105/media/us/mac/family/2021/d3a7c087-6656-4594-b06e-b88511e97476/films/product-gallery/mac-product-gallery-sm.mp4'
+    videoSrc: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
   },
   {
     id: 'v3',
     title: 'Tennis Techniques',
     description: 'Master the perfect tennis serve',
-    videoSrc: 'https://www.apple.com/105/media/us/mac/family/2021/d3a7c087-6656-4594-b06e-b88511e97476/films/product-gallery/mac-product-gallery-sm.mp4'
+    videoSrc: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
   },
   {
     id: 'v4',
     title: 'Running Essentials',
     description: 'Proper running form and technique',
-    videoSrc: 'https://www.apple.com/105/media/us/mac/family/2021/d3a7c087-6656-4594-b06e-b88511e97476/films/product-gallery/mac-product-gallery-sm.mp4'
+    videoSrc: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4'
   },
   {
     id: 'v5',
     title: 'Swimming Mastery',
     description: 'Olympic swimming techniques',
-    videoSrc: 'https://www.apple.com/105/media/us/mac/family/2021/d3a7c087-6656-4594-b06e-b88511e97476/films/product-gallery/mac-product-gallery-sm.mp4'
+    videoSrc: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4'
   },
   {
     id: 'v6',
     title: 'Golf Swing Analysis',
     description: 'Perfect your golf swing mechanics',
-    videoSrc: 'https://www.apple.com/105/media/us/mac/family/2021/d3a7c087-6656-4594-b06e-b88511e97476/films/product-gallery/mac-product-gallery-sm.mp4'
+    videoSrc: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4'
   },
   {
     id: 'v7',
     title: 'Cycling Training',
     description: 'Pro cycling techniques and training',
-    videoSrc: 'https://www.apple.com/105/media/us/mac/family/2021/d3a7c087-6656-4594-b06e-b88511e97476/films/product-gallery/mac-product-gallery-sm.mp4'
+    videoSrc: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4'
   },
   {
     id: 'v8',
     title: 'Fitness Workout',
     description: 'High-intensity interval training',
-    videoSrc: 'https://www.apple.com/105/media/us/mac/family/2021/d3a7c087-6656-4594-b06e-b88511e97476/films/product-gallery/mac-product-gallery-sm.mp4'
+    videoSrc: 'https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4'
   }
 ];
 
 const VideoGallery = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const mainVideoRef = useRef<HTMLVideoElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const mainVideoContainerRef = useRef<HTMLDivElement>(null);
+  const featuredVideoRef = useRef<HTMLDivElement>(null); // Reference to track the first featured video
   const galleryRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
-  const scrollPosition = useScrollPosition();
   
   useEffect(() => {
-    const mainVideo = videoRef.current;
+    // Clear any existing ScrollTriggers to prevent duplicate animations
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    
+    const mainVideo = mainVideoRef.current;
     const mainVideoContainer = mainVideoContainerRef.current;
+    const featuredVideo = featuredVideoRef.current;
     const gallery = galleryRef.current;
-    const horizontalScroll = horizontalRef.current;
+    const horizontal = horizontalRef.current;
+    const section = sectionRef.current;
     
-    if (!mainVideo || !mainVideoContainer || !gallery || !horizontalScroll || !sectionRef.current) return;
+    if (!mainVideo || !mainVideoContainer || !gallery || !horizontal || !section || !featuredVideo) return;
     
-    // Play video when it comes into view
-    ScrollTrigger.create({
-      trigger: mainVideoContainer,
-      start: "top 80%",
-      onEnter: () => {
-        mainVideo.play();
+    // Make sure video is loaded and can play
+    mainVideo.load();
+    
+    // Autoplay main video when it's visible
+    const videoPlayObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            mainVideo.play().catch(e => console.error("Video play error:", e));
+          } else {
+            mainVideo.pause();
+          }
+        });
       },
-      onLeave: () => {
-        mainVideo.pause();
-      },
-      onEnterBack: () => {
-        mainVideo.play();
-      },
-      onLeaveBack: () => {
-        mainVideo.pause();
-      }
-    });
-
-    // Create a timeline for the initial video zoom out effect
+      { threshold: 0.5 }
+    );
+    
+    videoPlayObserver.observe(mainVideoContainer);
+    
+    // Create a timeline for the zoom out effect
     const zoomOutTl = gsap.timeline({
       scrollTrigger: {
-        trigger: sectionRef.current,
+        trigger: section,
         start: "top top",
         end: "+=50%",
         scrub: true,
         pin: true,
         pinSpacing: true,
+        onEnter: () => {
+          console.log("Zoom animation triggered");
+        }
       }
     });
-
-    // Animate the main video container
+    
+    // Calculate position for direct transition
+    const featuredVideoRect = featuredVideo.getBoundingClientRect();
+    const mainVideoRect = mainVideoContainer.getBoundingClientRect();
+    
+    const scaleRatio = featuredVideoRect.width / mainVideoRect.width;
+    const xOffset = featuredVideoRect.left - mainVideoRect.left;
+    const yOffset = featuredVideoRect.top - mainVideoRect.top;
+    
+    // Zoom out animation sequence that transforms the main video directly to its position in the gallery
     zoomOutTl
-      .to(headerRef.current, { opacity: 0, y: -50, duration: 0.5 })
+      .to(headerRef.current, { 
+        opacity: 0, 
+        y: -50, 
+        duration: 0.5 
+      })
       .to(mainVideoContainer, { 
-        scale: 0.5, 
-        y: "-25vh", 
+        scale: scaleRatio,
+        x: xOffset,
+        y: yOffset + window.scrollY, 
         duration: 1,
         onComplete: () => {
-          // Show gallery after zoom out
-          gsap.to(gallery, { opacity: 1, duration: 0.5 });
+          // Hide the main video once the animation is complete
+          gsap.set(mainVideoContainer, { autoAlpha: 0 });
+          
+          // Make featured video visible (it's hidden until animation completes)
+          gsap.set(featuredVideo, { autoAlpha: 1 });
         }
       })
-      .to(gallery, { opacity: 1, duration: 0.5 }, "-=0.3");
-
-    // Set up horizontal scrolling for the gallery
-    const horizontalScrollTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: horizontalScroll,
-        start: "top 50%",
-        end: "+=200%",
-        scrub: true,
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
-      }
-    });
-
-    // Get the width that needs to be scrolled
-    const totalWidth = horizontalScroll.scrollWidth - horizontalScroll.clientWidth;
+      .to(gallery, { 
+        opacity: 1, 
+        duration: 0.5 
+      }, "-=0.3");
     
-    horizontalScrollTl.to(horizontalScroll, {
-      x: -totalWidth,
-      ease: "none",
-      duration: 1
-    });
-
-    // Animate in each gallery item with slight delay
-    const galleryVideos = gallery.querySelectorAll('.gallery-video-item');
+    // Set up horizontal scrolling for the gallery
+    if (horizontal.scrollWidth > horizontal.clientWidth) {
+      const totalWidth = horizontal.scrollWidth - horizontal.clientWidth;
+      
+      gsap.to(horizontal, {
+        x: -totalWidth,
+        ease: "none",
+        scrollTrigger: {
+          trigger: gallery,
+          start: "top 20%",
+          end: "+=200%",
+          scrub: true,
+          invalidateOnRefresh: true,
+          pin: gallery,
+          pinSpacing: true,
+          onEnter: () => {
+            console.log("Horizontal scroll triggered");
+          }
+        }
+      });
+    }
+    
+    // Setup video autoplay for gallery videos
+    const galleryVideos = document.querySelectorAll('.gallery-video-item');
     galleryVideos.forEach((video, index) => {
+      const videoEl = video.querySelector('video');
+      if (videoEl) {
+        videoEl.load(); // Ensure videos are loaded
+        
+        // Create intersection observer for each gallery video
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                videoEl.play().catch(e => console.error("Gallery video play error:", e));
+              } else {
+                videoEl.pause();
+              }
+            });
+          },
+          { threshold: 0.3 }
+        );
+        
+        observer.observe(video);
+      }
+      
+      // Animate in gallery items
       gsap.from(video, {
         opacity: 0,
         y: 30,
@@ -165,13 +213,22 @@ const VideoGallery = () => {
         }
       });
     });
-
+    
     return () => {
-      // Clean up all ScrollTriggers
+      // Clean up all animations and observers
+      videoPlayObserver.disconnect();
+      galleryVideos.forEach(video => {
+        const videoEl = video.querySelector('video');
+        if (videoEl) {
+          videoEl.pause();
+          videoEl.removeAttribute('src');
+          videoEl.load();
+        }
+      });
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
-
+  
   return (
     <section 
       ref={sectionRef} 
@@ -193,8 +250,9 @@ const VideoGallery = () => {
           className="max-w-5xl mx-auto rounded-2xl overflow-hidden shadow-2xl relative z-10 mb-12"
         >
           <video 
-            ref={videoRef}
+            ref={mainVideoRef}
             className="w-full h-full object-cover"
+            preload="auto"
             muted 
             loop 
             playsInline
@@ -214,7 +272,7 @@ const VideoGallery = () => {
         {/* Gallery that appears after main video zooms out */}
         <div 
           ref={galleryRef} 
-          className="opacity-0 pt-[30vh]"
+          className="opacity-0 pt-[10vh]"
         >
           <h3 className="text-2xl font-bold text-white mb-8 text-center">Featured Videos</h3>
           
@@ -222,9 +280,35 @@ const VideoGallery = () => {
           <div className="overflow-hidden">
             <div 
               ref={horizontalRef}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-12 w-[200%]"
+              className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-12 w-[200%]"
             >
-              {videoData.map((video) => (
+              {/* First video in the gallery - same as main video but initially hidden */}
+              <div 
+                ref={featuredVideoRef}
+                key="main-video-copy"
+                className="gallery-video-item relative rounded-xl overflow-hidden shadow-lg cursor-pointer transform transition-transform duration-300 hover:scale-105 opacity-0"
+                style={{ opacity: 0 }} // Initially hidden, will be revealed when main video animation completes
+              >
+                <div className="aspect-video bg-black">
+                  <video 
+                    className="w-full h-full object-cover"
+                    preload="auto"
+                    muted 
+                    loop 
+                    playsInline
+                  >
+                    <source src={videoData[0].videoSrc} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-4 flex flex-col justify-end">
+                  <h4 className="text-lg font-bold text-white mb-1">{videoData[0].title}</h4>
+                  <p className="text-sm text-white/70">{videoData[0].description}</p>
+                </div>
+              </div>
+              
+              {/* Rest of the videos */}
+              {videoData.slice(1).map((video) => (
                 <div 
                   key={video.id}
                   className="gallery-video-item relative rounded-xl overflow-hidden shadow-lg cursor-pointer transform transition-transform duration-300 hover:scale-105"
@@ -232,9 +316,9 @@ const VideoGallery = () => {
                   <div className="aspect-video bg-black">
                     <video 
                       className="w-full h-full object-cover"
+                      preload="auto"
                       muted 
                       loop 
-                      autoPlay 
                       playsInline
                     >
                       <source src={video.videoSrc} type="video/mp4" />
