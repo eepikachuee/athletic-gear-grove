@@ -57,6 +57,11 @@ const Index = () => {
       },
       once: true
     });
+    
+    return () => {
+      // Clean up ScrollTrigger instances
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
   }, []);
 
   return (
